@@ -52,7 +52,7 @@ Namespace Script
         ''' <param name="path">The file path of the PLAS script.</param>
         Sub New(path As String)
             MyBase.CompiledModel = ScriptParser.ParseFile(path)
-            MyBase._Logging = New Logging.LogFile(App.LocalData & "/" & Logging.LogFile.NowTimeNormalizedString & "." & path.BaseName & ".log")
+            MyBase._Logging = New Logging.LogFile(App.LocalData & "/.logs/" & Logging.LogFile.NowTimeNormalizedString & "." & path.BaseName & ".log")
         End Sub
 
         ''' <summary>
