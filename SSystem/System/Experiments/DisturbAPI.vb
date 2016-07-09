@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::74f8093a9d4e15d82034734e94cab12c, ..\GCModeller\sub-system\PLAS.NET\PLAS\Program.vb"
+﻿#Region "Microsoft.VisualBasic::cd592a41e170cb48187062cb97d431ce, ..\GCModeller\sub-system\PLAS.NET\SSystem\System\Experiments\DisturbAPI.vb"
 
     ' Author:
     ' 
@@ -25,9 +25,22 @@
 
 #End Region
 
-Module Program
+Namespace Kernel.ObjectModels
 
-    Public Function Main() As Integer
-        Return GetType(CLI).RunCLI(App.CommandLine)
-    End Function
-End Module
+    Public Enum Types
+        Increase
+        Decrease
+        ChangeTo
+    End Enum
+
+    Public Module DisturbAPI
+
+        Public ReadOnly Property Methods As IReadOnlyDictionary(Of Types, Func(Of Double, Double, Double)) =
+            New Dictionary(Of Types, Func(Of Double, Double, Double)) From {
+ _
+            {Types.Increase, Function(x, d) x + d},
+            {Types.Decrease, Function(x, d) x - d},
+            {Types.ChangeTo, Function(x, d) x}
+        }
+    End Module
+End Namespace

@@ -1,8 +1,36 @@
-﻿Imports System.Web.Script.Serialization
+﻿#Region "Microsoft.VisualBasic::0315d41ce0f70634086b82990b68c747, ..\GCModeller\sub-system\PLAS.NET\SSystem\Script\Model.vb"
+
+' Author:
+' 
+'       asuka (amethyst.asuka@gcmodeller.org)
+'       xieguigang (xie.guigang@live.com)
+' 
+' Copyright (c) 2016 GPL3 Licensed
+' 
+' 
+' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+' 
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+' 
+' You should have received a copy of the GNU General Public License
+' along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#End Region
+
+Imports System.Web.Script.Serialization
 Imports System.Xml.Serialization
-Imports LANS.SystemsBiology.AnalysisTools.CellPhenotype.SSystem.Kernel.ObjectModels
-Imports LANS.SystemsBiology.GCModeller.Framework.Kernel_Driver.LDM
+Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Extensions
+Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
+Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver.LDM
 
 Namespace Script
 
@@ -16,26 +44,26 @@ Namespace Script
         ''' </summary>
         ''' <returns></returns>
         <XmlElement> Public Property UserFunc As [Function]()
-        <XmlElement> Public Property [Constant] As Constant()
+        <XmlElement> Public Property [Constant] As NamedValue(Of String)()
 
-        Dim __varHash As Dictionary(Of Var)
+        Dim __varHash As Dictionary(Of var)
 
         ''' <summary>
         ''' A collection of the system variables.
         ''' (系统中的运行变量的集合)
         ''' </summary>
         ''' <remarks></remarks>
-        <XmlArray> Public Property Vars As Var()
+        <XmlArray> Public Property Vars As var()
             Get
                 If __varHash Is Nothing Then
-                    Return New Var() {}
+                    Return New var() {}
                 Else
                     Return __varHash.Values.ToArray
                 End If
             End Get
-            Set(value As Var())
+            Set(value As var())
                 If value Is Nothing Then
-                    __varHash = New Dictionary(Of Var)
+                    __varHash = New Dictionary(Of var)
                 Else
                     __varHash = value.ToDictionary
                 End If
@@ -71,11 +99,11 @@ Namespace Script
             End Get
         End Property
 
-        Public Sub Add(x As Var)
+        Public Sub Add(x As var)
             Call __varHash.Add(x)
         End Sub
 
-        Public Function FindObject(x As String) As Var
+        Public Function FindObject(x As String) As var
             Return __varHash(x)
         End Function
 
@@ -107,6 +135,11 @@ Namespace Script
         ''' <remarks></remarks>
         Public Overloads Shared Widening Operator CType(Path As String) As Model
             Return ScriptCompiler.Compile(Path)
+        End Operator
+
+        Public Shared Operator +(model As Model, x As var) As Model
+            Call model.Add(x)
+            Return model
         End Operator
     End Class
 End Namespace

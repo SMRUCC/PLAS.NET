@@ -1,8 +1,37 @@
-﻿Imports LANS.SystemsBiology.AnalysisTools.CellPhenotype.SSystem.Kernel.ObjectModels
-Imports LANS.SystemsBiology.AnalysisTools.CellPhenotype.SSystem.Script
-Imports LANS.SystemsBiology.GCModeller.Framework.Kernel_Driver
+﻿#Region "Microsoft.VisualBasic::da59dc412b1423ce3e4b60b5492ef68b, ..\GCModeller\sub-system\PLAS.NET\SSystem\System\Kernel.vb"
+
+' Author:
+' 
+'       asuka (amethyst.asuka@gcmodeller.org)
+'       xieguigang (xie.guigang@live.com)
+' 
+' Copyright (c) 2016 GPL3 Licensed
+' 
+' 
+' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+' 
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+' 
+' You should have received a copy of the GNU General Public License
+' along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#End Region
+
+Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.DocumentFormat.Csv
+Imports Microsoft.VisualBasic.DocumentFormat.Csv.DocumentStream
 Imports Microsoft.VisualBasic.Linq
+Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
+Imports SMRUCC.genomics.Analysis.SSystem.Script
+Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver
 
 Namespace Kernel
 
@@ -10,29 +39,31 @@ Namespace Kernel
     ''' The simulation system kernel.
     ''' </summary>
     ''' <remarks></remarks>
-    Public Class Kernel : Inherits IterationMathEngine(Of Model)
+    Public Class Kernel : Inherits IterationMathEngine(Of Script.Model)
 
         ''' <summary>
         ''' Data collecting
         ''' </summary>
         ''' <remarks></remarks>
-        Dim DataAcquisition As New DataAcquisition
+        Dim dataSvr As DataAcquisition
+
         ''' <summary>
         ''' Object that action the disturbing
         ''' </summary>
         ''' <remarks></remarks>
         Public Kicks As Kicks
+
         ''' <summary>
         ''' Store the system state.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Property Vars As Var()
+        Public Property Vars As var()
             Get
                 Return __varsHash.Values.ToArray
             End Get
-            Set(value As Var())
+            Set(value As var())
                 If value Is Nothing Then
-                    __varsHash = New Dictionary(Of Var)
+                    __varsHash = New Dictionary(Of var)
                 Else
                     __varsHash = value.ToDictionary
                 End If
@@ -45,19 +76,19 @@ Namespace Kernel
         ''' <remarks></remarks>
         Public Channels As Equation()
 
-        Dim __varsHash As Dictionary(Of Var)
+        Dim __varsHash As Dictionary(Of var)
 
         ''' <summary>
         ''' 模拟器的数学计算引擎
         ''' </summary>
         ReadOnly __engine As Mathematical.Expression
 
-        Sub New(Model As Model)
+        Sub New(Model As Script.Model)
             Call MyBase.New(Model)
             Call Me.Load(Model)
         End Sub
 
-        Public Function GetValue(id As String) As Var
+        Public Function GetValue(id As String) As var
             Return __varsHash(id)
         End Function
 
@@ -66,7 +97,7 @@ Namespace Kernel
         ''' </summary>
         ''' <remarks></remarks>
         Protected Overrides Function __innerTicks(KernelCycle As Integer) As Integer
-            Call DataAcquisition.Tick()
+            Call dataSvr.Tick()
             Call Kicks.Tick()
             Call (From x As Equation In Channels Select x.Elapsed).ToArray
             Return 0
@@ -99,7 +130,7 @@ Namespace Kernel
         End Function
 
         Public Sub Export(Path As String)
-            Call DataAcquisition.Save(Path)
+            Call dataSvr.Save(Path)
         End Sub
 
         Private Sub Load(DataModel As Script.Model)
@@ -110,14 +141,15 @@ Namespace Kernel
             For i As Integer = 0 To Channels.Length - 1
                 Channels(i).Set(Me)
             Next
+
             Kicks = New Kicks(Me)
-            DataAcquisition.Set(Me)
+            dataSvr = New DataAcquisition(Me)
 
             For Each Declaration In DataModel.UserFunc
                 Call __engine.Functions.Add(Declaration.Declaration)
             Next
             For Each Constant In DataModel.Constant
-                Call __engine.Constant.Add(Constant.Name, Constant.Expression)
+                Call __engine.Constant.Add(Constant.Name, Constant.x)
             Next
 
             For Each Var In Vars
@@ -131,7 +163,7 @@ Namespace Kernel
         ''' <param name="Path">The file path of the compiled xml model.</param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Overloads Shared Function Run(Path As String) As DocumentStream.File
+        Public Overloads Shared Function Run(Path As String) As List(Of DataSet)
             Return Kernel.Run(Script.Model.Load(Path))
         End Function
 
@@ -141,10 +173,10 @@ Namespace Kernel
         ''' <param name="Model"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Overloads Shared Function Run(Model As Script.Model) As DocumentStream.File
+        Public Overloads Shared Function Run(Model As Script.Model) As List(Of DataSet)
             Dim Kernel As New Kernel(Model)
             Kernel.Run()
-            Return DataAcquisition.Get(Kernel.DataAcquisition)
+            Return Kernel.dataSvr.data
         End Function
 
         ''' <summary>
