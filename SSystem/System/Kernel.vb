@@ -28,6 +28,7 @@
 Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.DocumentFormat.Csv
 Imports Microsoft.VisualBasic.DocumentFormat.Csv.DocumentStream
+Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
 Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
 Imports SMRUCC.genomics.Analysis.SSystem.Script
@@ -81,7 +82,7 @@ Namespace Kernel
         ''' <summary>
         ''' 模拟器的数学计算引擎
         ''' </summary>
-        ReadOnly __engine As Mathematical.Expression
+        ReadOnly __engine As New Mathematical.Expression
 
         Sub New(Model As Script.Model)
             Call MyBase.New(Model)
@@ -93,13 +94,13 @@ Namespace Kernel
         End Function
 
         ''' <summary>
-        ''' The kernel loop.(内核循环)
+        ''' The kernel loop.(内核循环, 会在这里更新数学表达式计算引擎的环境变量)
         ''' </summary>
         ''' <remarks></remarks>
         Protected Overrides Function __innerTicks(KernelCycle As Integer) As Integer
             Call dataSvr.Tick()
             Call Kicks.Tick()
-            Call (From x As Equation In Channels Select x.Elapsed).ToArray
+            Call (From x As Equation In Channels Select x.Elapsed(__engine)).ToArray
             Return 0
         End Function
 
@@ -135,8 +136,14 @@ Namespace Kernel
 
         Private Sub Load(DataModel As Script.Model)
             Me._innerDataModel = DataModel
-            Me.Vars = (From v In DataModel.Vars Select v Order By Len(v.UniqueId) Descending).ToArray
-            Me.Channels = DataModel.sEquations.ToArray(Function(x) New Equation(x))
+            Me.Vars = LinqAPI.Exec(Of var) <=
+ _
+                From v As var
+                In DataModel.Vars
+                Select v
+                Order By Len(v.UniqueId) Descending
+
+            Me.Channels = DataModel.sEquations.ToArray(Function(x) New Equation(x, __engine))
 
             For i As Integer = 0 To Channels.Length - 1
                 Channels(i).Set(Me)
@@ -152,8 +159,8 @@ Namespace Kernel
                 Call __engine.Constant.Add(Constant.Name, Constant.x)
             Next
 
-            For Each Var In Vars
-                Call Microsoft.VisualBasic.Mathematical.ScriptEngine.SetVariable(Var.UniqueId, Var.Value)
+            For Each x As var In Vars
+                Call __engine.SetVariable(x.UniqueId, x.Value)
             Next
         End Sub
 
