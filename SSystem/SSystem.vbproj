@@ -249,10 +249,6 @@
       <Project>{169ae739-df7c-4dda-ad0b-d7ba447825eb}</Project>
       <Name>SBML</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\runtime\visualbasic_App\Scripting\Math\Math\Microsoft.VisualBasic.Mathematical.vbproj">
-      <Project>{e3367b88-5d0c-495a-8273-331656d4b5aa}</Project>
-      <Name>Microsoft.VisualBasic.Mathematical</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\engine\GCModeller.Framework.Kernel_Driver\GCModeller.Framework.Kernel_Driver.vbproj">
       <Project>{73d186dc-0557-4ed0-9ec7-428240e04517}</Project>
       <Name>GCModeller.Framework.Kernel_Driver</Name>

@@ -50,6 +50,11 @@ Namespace Script
             }
         End Function
 
+        ''' <summary>
+        ''' 解析出系统的状态扰动实验表达式
+        ''' </summary>
+        ''' <param name="line"></param>
+        ''' <returns></returns>
         Public Function ExperimentParser(line As String) As Experiment
             Dim Tokens As String() = line.Split
             Dim Dict As New Dictionary(Of String, String)
