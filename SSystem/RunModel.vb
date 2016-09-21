@@ -28,8 +28,8 @@
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
-Imports Microsoft.VisualBasic.DocumentFormat.Csv
-Imports Microsoft.VisualBasic.DocumentFormat.Csv.DocumentStream
+Imports Microsoft.VisualBasic.Data.csv
+Imports Microsoft.VisualBasic.Data.csv.DocumentStream
 Imports Microsoft.VisualBasic.Mathematical.diffEq
 Imports SMRUCC.genomics.Analysis.SSystem.Script
 
@@ -78,7 +78,7 @@ Public Module RunModel
             Call "PLAS using ODEs solver....".__DEBUG_ECHO
 
             Dim p As Double = args.GetValue("/precise", 10000)
-            Dim output As out = Kernel.ODEs.RunSystem(Model)
+            Dim output As ODEsOut = Kernel.ODEs.RunSystem(Model)
             Dim df As File = output.DataFrame(xDisp:="#Time")
 
             Return df.Save(out, Encodings.ASCII)
