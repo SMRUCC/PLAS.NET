@@ -38,17 +38,18 @@ Namespace Script
             disturb.Interval = Val(cfgs("INTERVAL"))
             disturb.Kicks = Val(cfgs("KICKS"))
             disturb.Id = cfgs("OBJECT")
-            Dim Value As String = cfgs("VALUE")
 
-            If InStr(Value, "++") = 1 Then
+            Dim value As String = cfgs("VALUE")
+
+            If InStr(value, "++") = 1 Then
                 disturb.DisturbType = Types.Increase
-                disturb.Value = Val(Mid(Value, 3))
-            ElseIf InStr(Value, "--") = 1 Then
+                disturb.Value = Val(Mid(value, 3))
+            ElseIf InStr(value, "--") = 1 Then
                 disturb.DisturbType = Types.Decrease
-                disturb.Value = Val(Mid(Value, 3))
+                disturb.Value = Val(Mid(value, 3))
             Else
                 disturb.DisturbType = Types.ChangeTo
-                disturb.Value = Val(Value)
+                disturb.Value = Val(value)
             End If
 
             Return disturb
