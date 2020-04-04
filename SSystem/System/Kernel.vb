@@ -52,10 +52,10 @@ Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Data.csv.IO
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
+Imports Microsoft.VisualBasic.Math.Framework
 Imports Microsoft.VisualBasic.Math.Scripting
 Imports Microsoft.VisualBasic.Math.Scripting.MathExpression
 Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
-Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver
 
 Namespace Kernel
 
@@ -63,7 +63,7 @@ Namespace Kernel
     ''' The simulation system kernel.
     ''' </summary>
     ''' <remarks></remarks>
-    Public Class Kernel : Inherits IterationMathEngine(Of Script.Model)
+    Public Class Kernel : Inherits Iterator.Kernel
 
         ''' <summary>
         ''' Data collecting
@@ -107,20 +107,17 @@ Namespace Kernel
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Overrides ReadOnly Property RuntimeTicks As Long
-            Get
-                Return Me._RTime
-            End Get
-        End Property
+        Public ReadOnly Property RuntimeTicks As Long
+        Public ReadOnly Property Model As Script.Model
 
         ''' <summary>
         ''' 模拟器的数学计算引擎
         ''' </summary>
-        ReadOnly __engine As New ExpressionEngine
+        Friend ReadOnly mathEngine As New ExpressionEngine
 
-        Sub New(Model As Script.Model, Optional dataTick As Action(Of DataSet) = Nothing)
-            Call MyBase.New(Model)
-            Call Me.Load(Model, dataTick)
+        Sub New(model As Script.Model, Optional dataTick As Action(Of DataSet) = Nothing)
+            Call MyBase.New(model)
+            Call Me.Load(model, dataTick)
         End Sub
 
         Public Function GetValue(id As String) As var
@@ -128,21 +125,20 @@ Namespace Kernel
         End Function
 
         ''' <summary>
-        ''' The kernel loop.(内核循环, 会在这里更新数学表达式计算引擎的环境变量)
-        ''' </summary>
-        ''' <remarks></remarks>
-        Protected Overrides Function __innerTicks(KernelCycle As Integer) As Integer
-            Call dataSvr.Tick()
-            Call Kicks.Tick()
-            Call (From x As Equation In Channels Select x.Elapsed(__engine)).ToArray
-            Return 0
-        End Function
-
-        ''' <summary>
         ''' 整个引擎的计算精度
         ''' </summary>
         ''' <returns></returns>
         Public Property Precision As Double = 0.1
+
+        ''' <summary>
+        ''' The kernel loop.(内核循环, 会在这里更新数学表达式计算引擎的环境变量)
+        ''' </summary>
+        ''' <remarks></remarks>
+        Protected Overrides Sub [Step](itr As Integer)
+            Call dataSvr.Tick()
+            Call Kicks.Tick()
+            Call (From x As Equation In Channels Select x.Elapsed(mathEngine)).ToArray
+        End Sub
 
         ''' <summary>
         ''' 请注意，当前的线程会被阻塞在这里直到整个计算过程完成
@@ -185,27 +181,19 @@ Namespace Kernel
             Return 0
         End Function
 
-        Dim _break As Boolean = False
-
         ''' <summary>
         ''' 中断执行
         ''' </summary>
         Public Sub Break()
-            _break = True
+            is_terminated = True
         End Sub
-
-        Public ReadOnly Property Model() As Script.Model
-            Get
-                Return MyBase._innerDataModel
-            End Get
-        End Property
 
         Public Sub Export(Path As String)
             Call dataSvr.Save(Path)
         End Sub
 
         Private Sub Load(script As Script.Model, tick As Action(Of DataSet))
-            Me._innerDataModel = script
+            Me._Model = script
             Me.Vars = LinqAPI.Exec(Of var) <=
  _
                 From v As var
@@ -214,17 +202,17 @@ Namespace Kernel
                 Order By Len(v.UniqueId) Descending
 
             For Each declares In script.UserFunc.SafeQuery
-                Call __engine.SetFunction(declares.Declaration)
+                Call mathEngine.SetFunction(declares.Declaration)
             Next
             For Each __const In script.Constant.SafeQuery
-                Call __engine.SetSymbol(__const.Name, __const.Value)
+                Call mathEngine.SetSymbol(__const.Name, __const.Value)
             Next
 
             For Each x As var In Vars
-                __engine(x.UniqueId) = x.Value
+                mathEngine(x.UniqueId) = x.Value
             Next
 
-            Me.Channels = script.sEquations.Select(Function(x) New Equation(x, __engine))
+            Me.Channels = script.sEquations.Select(Function(x) New Equation(x, mathEngine))
 
             For i As Integer = 0 To Channels.Length - 1
                 Channels(i).Set(Me)

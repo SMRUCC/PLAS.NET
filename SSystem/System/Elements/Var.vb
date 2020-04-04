@@ -45,7 +45,6 @@
 Imports System.Xml.Serialization
 Imports Microsoft.VisualBasic.Math.Calculus.Dynamics
 Imports Microsoft.VisualBasic.Math.Scripting.MathExpression
-Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver
 Imports SMRUCC.genomics.Model.SBML.Level2.Elements
 
 Namespace Kernel.ObjectModels
