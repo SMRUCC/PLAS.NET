@@ -139,8 +139,8 @@ Global
 		{93F603F6-30FC-448B-8453-164757B670FF}.Biodeep|x86.Build.0 = GCModeller(Release_X64)|x86
 		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|Any CPU.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|Any CPU.Build.0 = GCModeller(Release_X64)|Any CPU
-		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|x64.ActiveCfg = GCModeller(Release_X64)|x64
-		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|x64.Build.0 = GCModeller(Release_X64)|x64
+		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|x64.ActiveCfg = Biostack|x64
+		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|x64.Build.0 = Biostack|x64
 		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|x86.ActiveCfg = GCModeller(Release_X64)|x86
 		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack|x86.Build.0 = GCModeller(Release_X64)|x86
 		{93F603F6-30FC-448B-8453-164757B670FF}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -427,8 +427,8 @@ Global
 		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biodeep|x86.Build.0 = GCModeller(Release_X64)|x86
 		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|Any CPU.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|Any CPU.Build.0 = GCModeller(Release_X64)|Any CPU
-		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|x64.ActiveCfg = GCModeller(Release_X64)|x64
-		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|x64.Build.0 = GCModeller(Release_X64)|x64
+		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|x64.ActiveCfg = Biostack|x64
+		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|x64.Build.0 = Biostack|x64
 		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|x86.ActiveCfg = GCModeller(Release_X64)|x86
 		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack|x86.Build.0 = GCModeller(Release_X64)|x86
 		{73D186DC-0557-4ED0-9EC7-428240E04517}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -571,8 +571,8 @@ Global
 		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biodeep|x86.Build.0 = GCModeller(Release_X64)|x86
 		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|Any CPU.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|Any CPU.Build.0 = GCModeller(Release_X64)|Any CPU
-		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|x64.ActiveCfg = GCModeller(Release_X64)|x64
-		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|x64.Build.0 = GCModeller(Release_X64)|x64
+		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|x64.ActiveCfg = Biostack|x64
+		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|x64.Build.0 = Biostack|x64
 		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|x86.ActiveCfg = GCModeller(Release_X64)|x86
 		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack|x86.Build.0 = GCModeller(Release_X64)|x86
 		{07B67F96-A341-454B-986E-2DC2276C88BB}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -715,8 +715,8 @@ Global
 		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biodeep|x86.Build.0 = Biodeep|x86
 		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|Any CPU.ActiveCfg = Biodeep|Any CPU
 		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|Any CPU.Build.0 = Biodeep|Any CPU
-		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|x64.ActiveCfg = Biodeep|x64
-		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|x64.Build.0 = Biodeep|x64
+		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|x64.ActiveCfg = Biostack|x64
+		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|x64.Build.0 = Biostack|x64
 		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|x86.ActiveCfg = Biodeep|x86
 		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack|x86.Build.0 = Biodeep|x86
 		{169AE739-DF7C-4DDA-AD0B-D7BA447825EB}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -2011,8 +2011,8 @@ Global
 		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biodeep|x86.Build.0 = Biodeep|x86
 		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|Any CPU.ActiveCfg = Biodeep|Any CPU
 		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|Any CPU.Build.0 = Biodeep|Any CPU
-		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|x64.ActiveCfg = Biodeep|x64
-		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|x64.Build.0 = Biodeep|x64
+		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|x64.ActiveCfg = Biostack|x64
+		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|x64.Build.0 = Biostack|x64
 		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|x86.ActiveCfg = Biodeep|x86
 		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack|x86.Build.0 = Biodeep|x86
 		{20912FF3-CE68-497C-854D-21E372F11D7C}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -2155,8 +2155,8 @@ Global
 		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biodeep|x86.Build.0 = GCModeller(Release_X64)|Any CPU
 		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|Any CPU.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|Any CPU.Build.0 = GCModeller(Release_X64)|Any CPU
-		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|x64.ActiveCfg = GCModeller(Release_X64)|x64
-		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|x64.Build.0 = GCModeller(Release_X64)|x64
+		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|x64.ActiveCfg = Biostack|x64
+		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|x64.Build.0 = Biostack|x64
 		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|x86.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack|x86.Build.0 = GCModeller(Release_X64)|Any CPU
 		{25AF39F4-76AF-411F-AC19-0DD1E128D801}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -2299,8 +2299,8 @@ Global
 		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biodeep|x86.Build.0 = GCModeller(Release_X64)|Any CPU
 		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|Any CPU.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|Any CPU.Build.0 = GCModeller(Release_X64)|Any CPU
-		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|x64.ActiveCfg = GCModeller(Release_X64)|x64
-		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|x64.Build.0 = GCModeller(Release_X64)|x64
+		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|x64.ActiveCfg = Biostack|x64
+		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|x64.Build.0 = Biostack|x64
 		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|x86.ActiveCfg = GCModeller(Release_X64)|Any CPU
 		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack|x86.Build.0 = GCModeller(Release_X64)|Any CPU
 		{DB845B19-91DD-48EC-91F7-7E1F0127B01D}.Biostack-Debug|Any CPU.ActiveCfg = Debug|Any CPU
