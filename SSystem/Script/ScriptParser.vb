@@ -118,45 +118,45 @@ Namespace Script
                                                      Return x.Group.ToArray
                                                  End Function)
 
-            Dim equations = typeTokens(Script.Tokens.Reaction).Select(AddressOf sEquationParser)
+            Dim equations = typeTokens(Script.ScriptTokens.Reaction).Select(AddressOf sEquationParser)
             Dim Disturbs As Experiment()
             Dim FinalTime As Integer
             Dim val As New ExpressionEngine
 
             Dim c =
-                If(typeTokens.ContainsKey(Script.Tokens.Constant),
-                typeTokens(Script.Tokens.Constant).Select(AddressOf ScriptParser.ConstantParser),
+                If(typeTokens.ContainsKey(Script.ScriptTokens.Constant),
+                typeTokens(Script.ScriptTokens.Constant).Select(AddressOf ScriptParser.ConstantParser),
                 {})
 
             For Each x As NamedValue(Of String) In c
                 Call val.SetSymbol(x.Name, x.Value)
             Next
 
-            Dim inits = typeTokens(Script.Tokens.InitValue).Select(Function(x) var.TryParse(x.Text, val))
+            Dim inits = typeTokens(Script.ScriptTokens.InitValue).Select(Function(x) var.TryParse(x.Text, val))
 
-            If typeTokens.ContainsKey(Script.Tokens.Disturb) Then
-                Disturbs = typeTokens(Script.Tokens.Disturb).Select(Function(x) ExperimentParser(x.Text))
+            If typeTokens.ContainsKey(Script.ScriptTokens.Disturb) Then
+                Disturbs = typeTokens(Script.ScriptTokens.Disturb).Select(Function(x) ExperimentParser(x.Text))
             Else
                 Disturbs = {}
             End If
 
-            If Not typeTokens.ContainsKey(Script.Tokens.Time) Then
+            If Not typeTokens.ContainsKey(Script.ScriptTokens.Time) Then
                 FinalTime = 100
             Else
-                FinalTime = val.Evaluate(typeTokens(Script.Tokens.Time).First.Text)
+                FinalTime = val.Evaluate(typeTokens(Script.ScriptTokens.Time).First.Text)
             End If
 
             Dim Title As String
 
-            If Not typeTokens.ContainsKey(Script.Tokens.Title) Then
+            If Not typeTokens.ContainsKey(Script.ScriptTokens.Title) Then
                 Title = "UNNAMED TITLE"
             Else
-                Title = typeTokens(Script.Tokens.Title).First.Text
+                Title = typeTokens(Script.ScriptTokens.Title).First.Text
             End If
 
             Dim Comments As String() =
-                If(typeTokens.ContainsKey(Script.Tokens.Comment),
-                typeTokens(Script.Tokens.Comment).Select(Function(x) x.Text),
+                If(typeTokens.ContainsKey(Script.ScriptTokens.Comment),
+                typeTokens(Script.ScriptTokens.Comment).Select(Function(x) x.Text),
                 {})
 
             Dim model As New Model With {
@@ -170,8 +170,8 @@ Namespace Script
             }
             Dim NameList As String()
 
-            If typeTokens.ContainsKey(Script.Tokens.Alias) Then
-                NameList = typeTokens(Script.Tokens.Alias).Select(Function(x) x.Text)
+            If typeTokens.ContainsKey(Script.ScriptTokens.Alias) Then
+                NameList = typeTokens(Script.ScriptTokens.Alias).Select(Function(x) x.Text)
             Else
                 NameList = {}
             End If
@@ -183,8 +183,8 @@ Namespace Script
             Next
 
             Dim sc As IEnumerable(Of String) =
-                If(typeTokens.ContainsKey(Script.Tokens.SubsComments),
-                typeTokens(Script.Tokens.SubsComments).Select(Function(x) x.Text),
+                If(typeTokens.ContainsKey(Script.ScriptTokens.SubsComments),
+                typeTokens(Script.ScriptTokens.SubsComments).Select(Function(x) x.Text),
                 {})
 
             For Each s As String In sc
@@ -194,8 +194,8 @@ Namespace Script
             Next
 
             model.UserFunc =
-                If(typeTokens.ContainsKey(Script.Tokens.Function),
-                typeTokens(Script.Tokens.Function).Select(Function(x) CType(x.Text, [Function])),
+                If(typeTokens.ContainsKey(Script.ScriptTokens.Function),
+                typeTokens(Script.ScriptTokens.Function).Select(Function(x) CType(x.Text, [Function])),
                 {})
 
             Return model
