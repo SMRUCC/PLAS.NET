@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::9a631503183ac7c0c8c461ccbc5ad859, ..\GCModeller\sub-system\PLAS.NET\SSystem\System\Experiments\Kicks.vb"
+﻿#Region "Microsoft.VisualBasic::9cc59257d659aa58a365745dd567aa5f, sub-system\PLAS.NET\SSystem\System\Experiments\Kicks.vb"
 
 ' Author:
 ' 
 '       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
 '       xieguigang (xie.guigang@live.com)
 ' 
-' Copyright (c) 2016 GPL3 Licensed
+' Copyright (c) 2018 GPL3 Licensed
 ' 
 ' 
 ' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
 ' 
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -23,12 +25,28 @@
 ' You should have received a copy of the GNU General Public License
 ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+
+' /********************************************************************************/
+
+' Summaries:
+
+'     Class Kicks
+' 
+'         Constructor: (+2 Overloads) Sub New
+' 
+'         Function: __getExpireds, __getPendings
+' 
+'         Sub: Tick
+' 
+' 
+' /********************************************************************************/
+
 #End Region
 
-Imports System.Xml.Serialization
-Imports Microsoft.VisualBasic
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Language
-Imports Microsoft.VisualBasic.Mathematical.diffEq
+Imports Microsoft.VisualBasic.Math.Calculus.Dynamics
 Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
 
 Namespace Kernel
@@ -112,4 +130,3 @@ Namespace Kernel
         End Function
     End Class
 End Namespace
-

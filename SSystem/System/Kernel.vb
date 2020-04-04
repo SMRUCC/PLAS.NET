@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::da59dc412b1423ce3e4b60b5492ef68b, ..\GCModeller\sub-system\PLAS.NET\SSystem\System\Kernel.vb"
+﻿#Region "Microsoft.VisualBasic::b2364eda8177171b9e0246efcc85ae6f, sub-system\PLAS.NET\SSystem\System\Kernel.vb"
 
 ' Author:
 ' 
 '       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
 '       xieguigang (xie.guigang@live.com)
 ' 
-' Copyright (c) 2016 GPL3 Licensed
+' Copyright (c) 2018 GPL3 Licensed
 ' 
 ' 
 ' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
 ' 
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -23,16 +25,36 @@
 ' You should have received a copy of the GNU General Public License
 ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+
+' /********************************************************************************/
+
+' Summaries:
+
+'     Class Kernel
+' 
+'         Properties: Model, Precision, RuntimeTicks, Vars
+' 
+'         Constructor: (+1 Overloads) Sub New
+' 
+'         Function: __innerTicks, GetValue, (+3 Overloads) Run
+' 
+'         Sub: Break, Export, Load
+' 
+' 
+' /********************************************************************************/
+
 #End Region
 
-Imports Microsoft.VisualBasic
-Imports Microsoft.VisualBasic.Data.csv
-Imports Microsoft.VisualBasic.Data.csv.DocumentStream
+Imports Microsoft.VisualBasic.ApplicationServices.Terminal
+Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar
+Imports Microsoft.VisualBasic.ComponentModel.Collection
+Imports Microsoft.VisualBasic.Data.csv.IO
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
-Imports Microsoft.VisualBasic.Terminal
+Imports Microsoft.VisualBasic.Math.Scripting
+Imports Microsoft.VisualBasic.Math.Scripting.MathExpression
 Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
-Imports SMRUCC.genomics.Analysis.SSystem.Script
 Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver
 
 Namespace Kernel
@@ -61,13 +83,13 @@ Namespace Kernel
         ''' <remarks></remarks>
         Public Property Vars As IEnumerable(Of var)
             Get
-                Return __varsHash.Values
+                Return symbolTable.Values
             End Get
             Set(value As IEnumerable(Of var))
                 If value Is Nothing Then
-                    __varsHash = New Dictionary(Of var)
+                    symbolTable = New Dictionary(Of var)
                 Else
-                    __varsHash = value.ToDictionary
+                    symbolTable = value.ToDictionary
                 End If
             End Set
         End Property
@@ -78,12 +100,23 @@ Namespace Kernel
         ''' <remarks></remarks>
         Public Channels As Equation()
 
-        Friend __varsHash As Dictionary(Of var)
+        Friend symbolTable As Dictionary(Of var)
+
+        ''' <summary>
+        ''' Gets the system run time ticks
+        ''' </summary>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Overrides ReadOnly Property RuntimeTicks As Long
+            Get
+                Return Me._RTime
+            End Get
+        End Property
 
         ''' <summary>
         ''' 模拟器的数学计算引擎
         ''' </summary>
-        ReadOnly __engine As New Mathematical.Expression
+        ReadOnly __engine As New ExpressionEngine
 
         Sub New(Model As Script.Model, Optional dataTick As Action(Of DataSet) = Nothing)
             Call MyBase.New(Model)
@@ -91,7 +124,7 @@ Namespace Kernel
         End Sub
 
         Public Function GetValue(id As String) As var
-            Return __varsHash(id)
+            Return symbolTable(id)
         End Function
 
         ''' <summary>
@@ -117,7 +150,7 @@ Namespace Kernel
         ''' <returns></returns>
         Public Overrides Function Run() As Integer
             Dim proc As New ProgressBar("Running PLAS.NET S-system kernel...")
-            Dim prog As New ProgressProvider(_innerDataModel.FinalTime * (1 / Precision))
+            Dim prog As New ProgressProvider(proc, _innerDataModel.FinalTime * (1 / Precision))
 
             _break = False
 
@@ -129,14 +162,14 @@ Namespace Kernel
 #If DEBUG Then
                     Call __innerTicks(Me._RTime)
 #Else
-                Try
-                    Call __innerTicks(Me._RTime)
-                Catch ex As Exception
-                    ex = New Exception("Model calculation error!", ex)
-                    Call App.LogException(ex)
-                    Call ex.PrintException
-                    Return -1
-                End Try
+                    Try
+                        Call __innerTicks(Me._RTime)
+                    Catch ex As Exception
+                        ex = New Exception("Model calculation error!", ex)
+                        Call App.LogException(ex)
+                        Call ex.PrintException
+                        Return -1
+                    End Try
 #End If
                     Call proc.SetProgress(prog.StepProgress)
                 Next
@@ -181,17 +214,17 @@ Namespace Kernel
                 Order By Len(v.UniqueId) Descending
 
             For Each declares In script.UserFunc.SafeQuery
-                Call __engine.Functions.Add(declares.Declaration)
+                Call __engine.SetFunction(declares.Declaration)
             Next
             For Each __const In script.Constant.SafeQuery
-                Call __engine.Constant.Add(__const.Name, __const.x)
+                Call __engine.SetSymbol(__const.Name, __const.Value)
             Next
 
             For Each x As var In Vars
                 __engine(x.UniqueId) = x.Value
             Next
 
-            Me.Channels = script.sEquations.ToArray(Function(x) New Equation(x, __engine))
+            Me.Channels = script.sEquations.Select(Function(x) New Equation(x, __engine))
 
             For i As Integer = 0 To Channels.Length - 1
                 Channels(i).Set(Me)
@@ -227,16 +260,5 @@ Namespace Kernel
             Call Kernel.Run()
             Return Kernel.dataSvr.data
         End Function
-
-        ''' <summary>
-        ''' Gets the system run time ticks
-        ''' </summary>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Overrides ReadOnly Property RuntimeTicks As Long
-            Get
-                Return Me._RTime
-            End Get
-        End Property
     End Class
 End Namespace

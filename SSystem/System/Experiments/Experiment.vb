@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::dc490dcc0989e1ad4eeb8b8226b09c39, ..\GCModeller\sub-system\PLAS.NET\SSystem\System\Experiments\Experiment.vb"
+﻿#Region "Microsoft.VisualBasic::dc490dcc0989e1ad4eeb8b8226b09c39, sub-system\PLAS.NET\SSystem\System\Experiments\Experiment.vb"
 
     ' Author:
     ' 
     '       asuka (amethyst.asuka@gcmodeller.org)
+    '       xie (genetics@smrucc.org)
     '       xieguigang (xie.guigang@live.com)
     ' 
-    ' Copyright (c) 2016 GPL3 Licensed
+    ' Copyright (c) 2018 GPL3 Licensed
     ' 
     ' 
     ' GNU GENERAL PUBLIC LICENSE (GPL3)
+    ' 
     ' 
     ' This program is free software: you can redistribute it and/or modify
     ' it under the terms of the GNU General Public License as published by
@@ -22,6 +24,22 @@
     ' 
     ' You should have received a copy of the GNU General Public License
     ' along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+
+    ' /********************************************************************************/
+
+    ' Summaries:
+
+    '     Class Experiment
+    ' 
+    '         Properties: DisturbType, Id, Interval, Kicks, Start
+    '                     Value
+    ' 
+    '         Function: ToString
+    ' 
+    ' 
+    ' /********************************************************************************/
 
 #End Region
 

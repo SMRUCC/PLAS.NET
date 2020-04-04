@@ -1,37 +1,54 @@
-﻿#Region "Microsoft.VisualBasic::ad03784d845a905a6b1e24bd71eb42aa, ..\GCModeller\sub-system\PLAS.NET\SSystem\Script\ScriptCompiler.vb"
+﻿#Region "Microsoft.VisualBasic::0fcdcdeb63c4681d4383f49221e30ee0, sub-system\PLAS.NET\SSystem\Script\ScriptCompiler.vb"
 
-' Author:
-' 
-'       asuka (amethyst.asuka@gcmodeller.org)
-'       xieguigang (xie.guigang@live.com)
-' 
-' Copyright (c) 2016 GPL3 Licensed
-' 
-' 
-' GNU GENERAL PUBLIC LICENSE (GPL3)
-' 
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-' 
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-' 
-' You should have received a copy of the GNU General Public License
-' along with this program. If not, see <http://www.gnu.org/licenses/>.
+    ' Author:
+    ' 
+    '       asuka (amethyst.asuka@gcmodeller.org)
+    '       xie (genetics@smrucc.org)
+    '       xieguigang (xie.guigang@live.com)
+    ' 
+    ' Copyright (c) 2018 GPL3 Licensed
+    ' 
+    ' 
+    ' GNU GENERAL PUBLIC LICENSE (GPL3)
+    ' 
+    ' 
+    ' This program is free software: you can redistribute it and/or modify
+    ' it under the terms of the GNU General Public License as published by
+    ' the Free Software Foundation, either version 3 of the License, or
+    ' (at your option) any later version.
+    ' 
+    ' This program is distributed in the hope that it will be useful,
+    ' but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ' GNU General Public License for more details.
+    ' 
+    ' You should have received a copy of the GNU General Public License
+    ' along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+
+    ' /********************************************************************************/
+
+    ' Summaries:
+
+    '     Class ScriptCompiler
+    ' 
+    '         Properties: AutoFixError
+    ' 
+    '         Constructor: (+1 Overloads) Sub New
+    '         Function: CheckConsist, (+2 Overloads) Compile, Link, PreCompile
+    ' 
+    ' 
+    ' /********************************************************************************/
 
 #End Region
 
 Imports System.Text
-Imports System.Text.RegularExpressions.Regex
-Imports Microsoft.VisualBasic
+Imports Microsoft.VisualBasic.ApplicationServices.Debugging.Logging
+Imports Microsoft.VisualBasic.ApplicationServices.Terminal
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Language
-Imports Microsoft.VisualBasic.Terminal
 Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
 Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver
 
@@ -53,7 +70,7 @@ Namespace Script
         ''' <param name="path">The file path of the PLAS script.</param>
         Sub New(path As String)
             MyBase.CompiledModel = ScriptParser.ParseFile(path)
-            MyBase._Logging = New Logging.LogFile(App.LocalData & "/.logs/" & Logging.LogFile.NowTimeNormalizedString & "." & path.BaseName & ".log")
+            MyBase._Logging = New LogFile(App.LocalData & "/.logs/" & LogFile.NowTimeNormalizedString & "." & path.BaseName & ".log")
         End Sub
 
         ''' <summary>
@@ -87,7 +104,7 @@ Namespace Script
 
             Return New NamedValue(Of List(Of SEquation)) With {
                 .Name = sb.ToString,
-                .x = out
+                .Value = out
             }
         End Function
 
@@ -102,7 +119,7 @@ Namespace Script
             If Not String.IsNullOrEmpty(checked.Name) Then  ' 检测的结果有错误
                 Call printf("Trying to fix these problems.\n-----------------------------")
 
-                For Each Var As SEquation In checked.x
+                For Each Var As SEquation In checked.Value
                     CompiledModel += New var With {
                         .UniqueId = Var.x,
                         .Value = 0

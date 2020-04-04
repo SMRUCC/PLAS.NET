@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::8ef3f7f679afb9953a14a13455f0e8a2, ..\GCModeller\sub-system\PLAS.NET\SSystem\System\Elements\Var.vb"
+﻿#Region "Microsoft.VisualBasic::9c76833f2d81e5d1795d1ec1362e531c, sub-system\PLAS.NET\SSystem\System\Elements\Var.vb"
 
 ' Author:
 ' 
 '       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
 '       xieguigang (xie.guigang@live.com)
 ' 
-' Copyright (c) 2016 GPL3 Licensed
+' Copyright (c) 2018 GPL3 Licensed
 ' 
 ' 
 ' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
 ' 
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -23,10 +25,26 @@
 ' You should have received a copy of the GNU General Public License
 ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+
+' /********************************************************************************/
+
+' Summaries:
+
+'     Class var
+' 
+'         Properties: Comment, Title, Value
+' 
+'         Function: ToString, TryParse
+' 
+' 
+' /********************************************************************************/
+
 #End Region
 
 Imports System.Xml.Serialization
-Imports Microsoft.VisualBasic.Mathematical.diffEq
+Imports Microsoft.VisualBasic.Math.Calculus.Dynamics
+Imports Microsoft.VisualBasic.Math.Scripting.MathExpression
 Imports SMRUCC.genomics.GCModeller.Framework.Kernel_Driver
 Imports SMRUCC.genomics.Model.SBML.Level2.Elements
 
@@ -69,12 +87,12 @@ Namespace Kernel.ObjectModels
         ''' <param name="strData"></param>
         ''' <param name="val"></param>
         ''' <returns></returns>
-        Public Shared Function TryParse(strData As String, val As Mathematical.Expression) As var
+        Public Shared Function TryParse(strData As String, val As ExpressionEngine) As var
             Dim tokens = strData.GetTagValue("=", trim:=True)
 
             Return New var With {
                 .UniqueId = tokens.Name,
-                .Value = val.Evaluation(tokens.x)
+                .Value = val.Evaluate(tokens.Value)
             }
         End Function
 
@@ -89,7 +107,7 @@ Namespace Kernel.ObjectModels
 
             Return New var With {
                 .UniqueId = Token.Name,
-                .Value = Val(Token.x)
+                .Value = Val(Token.Value)
             }
         End Operator
     End Class

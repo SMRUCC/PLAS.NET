@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::5cfbc87efded66b6a6f8210c4b3c89f8, ..\GCModeller\sub-system\PLAS.NET\SSystem\RunModel.vb"
+﻿#Region "Microsoft.VisualBasic::6338a5de5ce73cbe10e329b6e050a937, sub-system\PLAS.NET\SSystem\RunModel.vb"
 
 ' Author:
 ' 
 '       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
 '       xieguigang (xie.guigang@live.com)
 ' 
-' Copyright (c) 2016 GPL3 Licensed
+' Copyright (c) 2018 GPL3 Licensed
 ' 
 ' 
 ' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
 ' 
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -23,14 +25,35 @@
 ' You should have received a copy of the GNU General Public License
 ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+
+' /********************************************************************************/
+
+' Summaries:
+
+' Module RunModel
+' 
+' 
+'     Delegate Function
+' 
+'         Properties: RunMethods
+' 
+'         Function: (+2 Overloads) RunModel, RunSBML, RunScript
+' 
+' 
+' 
+' /********************************************************************************/
+
 #End Region
 
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.Data.csv
-Imports Microsoft.VisualBasic.Data.csv.DocumentStream
-Imports Microsoft.VisualBasic.Mathematical.diffEq
+Imports Microsoft.VisualBasic.Data.csv.IO
+Imports Microsoft.VisualBasic.Math.Calculus
+Imports Microsoft.VisualBasic.Math.Calculus.Dynamics.Data
+Imports Microsoft.VisualBasic.Text
 Imports SMRUCC.genomics.Analysis.SSystem.Script
 
 Public Module RunModel
@@ -68,7 +91,8 @@ Public Module RunModel
     <Extension>
     Public Function RunModel(Model As Script.Model, args As CommandLine) As Integer
         Dim t As Double = args.GetDouble("/time")
-        Dim out As String = args.GetValue("-o", args("-i").TrimSuffix & ".out.Csv")
+        Dim in$ = BuildArgs() <= "-i"
+        Dim out As String = args.GetValue("-o", in$.TrimSuffix & ".out.Csv")
 
         If t > 0 Then
             Model.FinalTime = t
@@ -86,10 +110,9 @@ Public Module RunModel
             Dim p As Double = args.GetValue("/precise", 0.1)
             Dim ds As IEnumerable(Of DataSet) = Kernel.Kernel.Run(Model, p)
             Dim maps As New Dictionary(Of String, String) From {
-                {NameOf(DataSet.Identifier), "#Time"}
+                {NameOf(DataSet.ID), "#Time"}
             }
             Return ds.SaveTo(path:=out, nonParallel:=True, maps:=maps).CLICode
         End If
     End Function
 End Module
-

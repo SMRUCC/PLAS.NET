@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::123f896535b0c23f6f2a0b00ee191bd1, ..\GCModeller\sub-system\PLAS.NET\SSystem\Script\ScriptParser.vb"
+﻿#Region "Microsoft.VisualBasic::bd5e8e5358a2a0501cf2d81689d490f2, sub-system\PLAS.NET\SSystem\Script\ScriptParser.vb"
 
 ' Author:
 ' 
 '       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
 '       xieguigang (xie.guigang@live.com)
 ' 
-' Copyright (c) 2016 GPL3 Licensed
+' Copyright (c) 2018 GPL3 Licensed
 ' 
 ' 
 ' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
 ' 
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -23,6 +25,20 @@
 ' You should have received a copy of the GNU General Public License
 ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+
+' /********************************************************************************/
+
+' Summaries:
+
+'     Module ScriptParser
+' 
+'         Function: (+2 Overloads) ConstantParser, ExperimentParser, ParseFile, ParseScript, ParseStream
+'                   sEquationParser
+' 
+' 
+' /********************************************************************************/
+
 #End Region
 
 Imports System.IO
@@ -30,6 +46,7 @@ Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
+Imports Microsoft.VisualBasic.Math.Scripting.MathExpression
 Imports Microsoft.VisualBasic.Scripting.TokenIcer
 Imports SMRUCC.genomics.Analysis.SSystem.Kernel.ObjectModels
 
@@ -43,10 +60,10 @@ Namespace Script
         ''' <param name="x"></param>
         ''' <returns></returns>
         Public Function sEquationParser(x As Token(Of Tokens)) As SEquation
-            Dim value = x.TokenValue.GetTagValue("=")
+            Dim value = x.Value.GetTagValue("=")
             Return New SEquation With {
                 .x = value.Name,
-                .Expression = value.x
+                .Expression = value.Value
             }
         End Function
 
@@ -92,7 +109,7 @@ Namespace Script
         ''' 
         <Extension>
         Public Function ParseScript(scriptText As String) As Model
-            Dim tokens As Token(Of Tokens)() = TokenIcer.TryParse(scriptText.lTokens)
+            Dim tokens As Token(Of Tokens)() = TokenIcer.TryParse(scriptText.LineTokens)
             Dim typeTokens = (From x As Token(Of Tokens)
                               In tokens
                               Select x
@@ -100,24 +117,24 @@ Namespace Script
                                    .ToDictionary(Function(x) x.Type,
                                                  Function(x) x.Group.ToArray)
 
-            Dim equations = typeTokens(Script.Tokens.Reaction).ToArray(AddressOf sEquationParser)
+            Dim equations = typeTokens(Script.Tokens.Reaction).Select(AddressOf sEquationParser)
             Dim Disturbs As Experiment()
             Dim FinalTime As Integer
-            Dim val As New Mathematical.Expression
+            Dim val As New ExpressionEngine
 
             Dim c =
                 If(typeTokens.ContainsKey(Script.Tokens.Constant),
-                typeTokens(Script.Tokens.Constant).ToArray(AddressOf ScriptParser.ConstantParser),
+                typeTokens(Script.Tokens.Constant).Select(AddressOf ScriptParser.ConstantParser),
                 {})
 
             For Each x As NamedValue(Of String) In c
-                Call val.Constant.Add(x.Name, expr:=x.x)
+                Call val.SetSymbol(x.Name, x.Value)
             Next
 
-            Dim inits = typeTokens(Script.Tokens.InitValue).ToArray(Function(x) var.TryParse(x.Text, val))
+            Dim inits = typeTokens(Script.Tokens.InitValue).Select(Function(x) var.TryParse(x.Text, val))
 
             If typeTokens.ContainsKey(Script.Tokens.Disturb) Then
-                Disturbs = typeTokens(Script.Tokens.Disturb).ToArray(Function(x) ExperimentParser(x.Text))
+                Disturbs = typeTokens(Script.Tokens.Disturb).Select(Function(x) ExperimentParser(x.Text))
             Else
                 Disturbs = {}
             End If
@@ -125,7 +142,7 @@ Namespace Script
             If Not typeTokens.ContainsKey(Script.Tokens.Time) Then
                 FinalTime = 100
             Else
-                FinalTime = val.Evaluation(typeTokens(Script.Tokens.Time).First.Text)
+                FinalTime = val.Evaluate(typeTokens(Script.Tokens.Time).First.Text)
             End If
 
             Dim Title As String
@@ -138,7 +155,7 @@ Namespace Script
 
             Dim Comments As String() =
                 If(typeTokens.ContainsKey(Script.Tokens.Comment),
-                typeTokens(Script.Tokens.Comment).ToArray(Function(x) x.Text),
+                typeTokens(Script.Tokens.Comment).Select(Function(x) x.Text),
                 {})
 
             Dim model As New Model With {
@@ -153,7 +170,7 @@ Namespace Script
             Dim NameList As String()
 
             If typeTokens.ContainsKey(Script.Tokens.Alias) Then
-                NameList = typeTokens(Script.Tokens.Alias).ToArray(Function(x) x.Text)
+                NameList = typeTokens(Script.Tokens.Alias).Select(Function(x) x.Text)
             Else
                 NameList = {}
             End If
@@ -177,7 +194,7 @@ Namespace Script
 
             model.UserFunc =
                 If(typeTokens.ContainsKey(Script.Tokens.Function),
-                typeTokens(Script.Tokens.Function).ToArray(Function(x) CType(x.Text, [Function])),
+                typeTokens(Script.Tokens.Function).Select(Function(x) CType(x.Text, [Function])),
                 {})
 
             Return model
@@ -205,13 +222,13 @@ Namespace Script
         ''' <returns></returns>
         Public Function ConstantParser(expr As Value(Of String)) As NamedValue(Of String)
             Dim name As String = (expr = (+expr).Trim).Split.First
-            expr.value = Mid(expr.value, name.Length + 1).Trim
-            expr = expr.value _
+            expr.Value = Mid(expr.Value, name.Length + 1).Trim
+            expr = expr.Value _
                 .GetTagValue("#", failureNoName:=False).Name _
                 .GetTagValue("'", failureNoName:=False).Name _
                 .GetTagValue("//", failureNoName:=False).Name
             Return New NamedValue(Of String) With {
-                .x = expr,
+                .Value = expr,
                 .Name = name
             }
         End Function

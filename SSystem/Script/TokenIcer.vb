@@ -1,14 +1,16 @@
-﻿#Region "Microsoft.VisualBasic::d863403ee815a0dadd8a6205c178545b, ..\GCModeller\sub-system\PLAS.NET\SSystem\Script\TokenIcer.vb"
+﻿#Region "Microsoft.VisualBasic::9dae4ed4861309f54dca4a53258b15a3, sub-system\PLAS.NET\SSystem\Script\TokenIcer.vb"
 
 ' Author:
 ' 
 '       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
 '       xieguigang (xie.guigang@live.com)
 ' 
-' Copyright (c) 2016 GPL3 Licensed
+' Copyright (c) 2018 GPL3 Licensed
 ' 
 ' 
 ' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
 ' 
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -23,12 +25,26 @@
 ' You should have received a copy of the GNU General Public License
 ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+
+' /********************************************************************************/
+
+' Summaries:
+
+'     Module TokenIcer
+' 
+'         Properties: Tokens
+' 
+'         Function: __tokenParser, TryParse
+' 
+' 
+' /********************************************************************************/
+
 #End Region
 
-Imports Microsoft.VisualBasic.Scripting.TokenIcer
-Imports Microsoft.VisualBasic
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.Language
+Imports Microsoft.VisualBasic.Scripting.TokenIcer
 
 Namespace Script
 
