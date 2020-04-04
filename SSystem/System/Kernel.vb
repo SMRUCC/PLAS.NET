@@ -116,7 +116,6 @@ Namespace Kernel
         Friend ReadOnly mathEngine As New ExpressionEngine
 
         Sub New(model As Script.Model, Optional dataTick As Action(Of DataSet) = Nothing)
-            Call MyBase.New(model)
             Call Me.Load(model, dataTick)
         End Sub
 
@@ -145,21 +144,18 @@ Namespace Kernel
         ''' </summary>
         ''' <returns></returns>
         Public Overrides Function Run() As Integer
-            Dim proc As New ProgressBar("Running PLAS.NET S-system kernel...")
-            Dim prog As New ProgressProvider(proc, _innerDataModel.FinalTime * (1 / Precision))
+            Using proc As New ProgressBar("Running PLAS.NET S-system kernel...")
+                Dim prog As New ProgressProvider(proc, Model.FinalTime * (1 / Precision))
 
-            _break = False
-
-            If Not TerminalEvents.ConsoleHandleInvalid Then
-                For Me._RTime = 0 To prog.Target
-                    If _break Then
+                For _RuntimeTicks = 0 To prog.Target
+                    If is_terminated Then
                         Exit For
                     End If
 #If DEBUG Then
                     Call __innerTicks(Me._RTime)
 #Else
                     Try
-                        Call __innerTicks(Me._RTime)
+                        Call [Step](RuntimeTicks)
                     Catch ex As Exception
                         ex = New Exception("Model calculation error!", ex)
                         Call App.LogException(ex)
@@ -169,14 +165,7 @@ Namespace Kernel
 #End If
                     Call proc.SetProgress(prog.StepProgress)
                 Next
-            Else
-                For Me._RTime = 0 To prog.Target
-                    If _break Then
-                        Exit For
-                    End If
-                    Call __innerTicks(Me._RTime)
-                Next
-            End If
+            End Using
 
             Return 0
         End Function
@@ -199,7 +188,7 @@ Namespace Kernel
                 From v As var
                 In script.Vars
                 Select v
-                Order By Len(v.UniqueId) Descending
+                Order By Len(v.Id) Descending
 
             For Each declares In script.UserFunc.SafeQuery
                 Call mathEngine.SetFunction(declares.Declaration)
@@ -209,7 +198,7 @@ Namespace Kernel
             Next
 
             For Each x As var In Vars
-                mathEngine(x.UniqueId) = x.Value
+                mathEngine(x.Id) = x.Value
             Next
 
             Me.Channels = script.sEquations.Select(Function(x) New Equation(x, mathEngine))
