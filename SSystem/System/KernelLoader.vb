@@ -33,7 +33,7 @@ Namespace Kernel
                 channels(i).Set(kernel)
             Next
 
-            kernel.kicks = New Kicks(kernel)
+            kernel.kicks = New Kicks(kernel, script)
             kernel.Channels = channels
             kernel.Vars = vars
 
